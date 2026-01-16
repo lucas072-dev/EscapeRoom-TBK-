@@ -8,15 +8,16 @@ def typewriter(text, delay=0.05):
         time.sleep(delay)
     print()
 
-# ===== START WACHTWOORD =====
-typewriter("Voer het wachtwoord in:", 0.07)
-wachtwoord = input("> ")
+# ===== START WACHTWOORD (ONBEPERKT) =====
+while True:
+    typewriter("Voer het wachtwoord in:", 0.07)
+    wachtwoord = input("> ")
 
-if wachtwoord == "1908":
-    typewriter("✅ Het wachtwoord is correct!\n")
-else:
-    typewriter("❌ Het wachtwoord is incorrect!")
-    sys.exit()
+    if wachtwoord == "1908":
+        typewriter("✅ Het wachtwoord is correct!\n")
+        break
+    else:
+        typewriter("❌ Onjuist wachtwoord.\n")
 
 # ===== VRAGEN =====
 vragen = [
@@ -43,32 +44,37 @@ vragen = [
 ]
 
 def vraag_stel(vraag, antwoord, hint):
+    fouten = 0
     typewriter("\n" + vraag)
-    respons = input("Jouw antwoord: ")
 
-    if respons.lower().strip() == antwoord.lower():
-        typewriter("Correct! ✅")
-        return True
-    else:
-        typewriter(f"❌ Fout! Het juiste antwoord was: {antwoord}")
-        typewriter(f"💡 Hint: {hint}")
-        return False
+    while True:
+        respons = input("Jouw antwoord: ").strip().lower()
+
+        if respons == antwoord.lower():
+            typewriter("Correct! ✅")
+            return  # pas NU naar de volgende vraag
+        else:
+            fouten += 1
+            typewriter("❌ Fout antwoord.")
+
+            if fouten == 3:
+                typewriter(f"💡 Hint: {hint}")
 
 def main():
     typewriter("De quiz begint...\n", 0.06)
 
     for v in vragen:
-        if not vraag_stel(v["vraag"], v["antwoord"], v["hint"]):
-            typewriter("\nJe bent afgevallen. Probeer het opnieuw.")
-            return
+        vraag_stel(v["vraag"], v["antwoord"], v["hint"])
 
-    typewriter("\n🎯 Alle vragen goed beantwoord!")
+    typewriter("\n🎯 Alle vragen beantwoord!")
     typewriter("Voer het eindwachtwoord in:")
 
-    laatste = input("> ")
-    if laatste == "9128":
-        typewriter("🎉 Eindwachtwoord correct! Je hebt het gehaald!", 0.06)
-    else:
-        typewriter("❌ Fout eindwachtwoord. Probeer later opnieuw.")
+    while True:
+        laatste = input("> ")
+        if laatste == "9128":
+            typewriter("🎉 Eindwachtwoord correct! Je hebt het gehaald!", 0.06)
+            break
+        else:
+            typewriter("❌ Fout eindwachtwoord. Probeer opnieuw.")
 
 main()
