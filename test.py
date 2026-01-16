@@ -5,24 +5,24 @@ import os
 # ===== KLEUR =====
 RED = "\033[91m"
 RESET = "\033[0m"
-import time
- 
-def mooie_progress_bar():
-    stappen = 50
-    bar_lengte = 30
-    print("Laden: ", end='', flush=True)
-    for i in range(stappen + 1):
-        percent = (i / stappen) * 100
-        blokjes = i * bar_lengte // stappen
-        bar = '█' * blokjes + '░' * (bar_lengte - blokjes)
-        print(f'\r[{bar}] {percent:.1f}%', end='', flush=True)
-        time.sleep(0.1)
-    print("\n Gevalideerd")
- 
+
+# ===== INPUT LOCK =====
+input_toegestaan = True
+
+def veilige_input(prompt=""):
+    while not input_toegestaan:
+        time.sleep(0.05)
+    return input(prompt)
+
+# ===== CLEAR SCREEN =====
 def clear_screen():
     os.system("cls" if os.name == "nt" else "clear")
 
+# ===== TYPEWRITER =====
 def typewriter(text, delay=0.05, color=None):
+    global input_toegestaan
+    input_toegestaan = False
+
     if color:
         sys.stdout.write(color)
     for char in text:
@@ -33,14 +33,36 @@ def typewriter(text, delay=0.05, color=None):
         sys.stdout.write(RESET)
     print()
 
+    input_toegestaan = True
+
+# ===== LOADING BAR =====
+def mooie_progress_bar():
+    global input_toegestaan
+    input_toegestaan = False
+
+    stappen = 50
+    bar_lengte = 30
+    print("Laden: ", end='', flush=True)
+
+    for i in range(stappen + 1):
+        percent = (i / stappen) * 100
+        blokjes = i * bar_lengte // stappen
+        bar = '█' * blokjes + '░' * (bar_lengte - blokjes)
+        print(f'\r[{bar}] {percent:.1f}%', end='', flush=True)
+        time.sleep(0.1)
+
+    print("\nGevalideerd")
+    input_toegestaan = True
+
 # ===== START =====
 clear_screen()
 
-# ===== START WACHTWOORD (ONBEPERKT) =====
+# ===== START WACHTWOORD =====
 while True:
     typewriter("Wachtwoord:", 0.07)
-    wachtwoord = input("> ")
+    wachtwoord = veilige_input("> ")
     mooie_progress_bar()
+
     if wachtwoord == "1908":
         clear_screen()
         typewriter("Het wachtwoord is correct!\n")
@@ -75,11 +97,10 @@ vragen = [
 def vraag_stel(vraag, antwoorden, hint):
     fouten = 0
     typewriter("\n" + vraag)
-
     antwoorden = [a.lower() for a in antwoorden]
 
     while True:
-        respons = input("Antwoord: ").strip().lower()
+        respons = veilige_input("Antwoord: ").strip().lower()
 
         if respons in antwoorden:
             clear_screen()
@@ -92,6 +113,7 @@ def vraag_stel(vraag, antwoorden, hint):
             if fouten == 3:
                 typewriter(f"Hint: {hint}")
 
+# ===== MAIN =====
 def main():
     for v in vragen:
         vraag_stel(v["vraag"], v["antwoorden"], v["hint"])
@@ -101,7 +123,7 @@ def main():
     typewriter("Voer het eindwachtwoord in:")
 
     while True:
-        laatste = input("> ")
+        laatste = veilige_input("> ")
         if laatste == "9128":
             clear_screen()
             typewriter("Wachtwoord correct", 0.06)
