@@ -10,7 +10,7 @@ def typewriter(text, delay=0.05):
 
 # ===== START WACHTWOORD (ONBEPERKT) =====
 while True:
-    typewriter("Voer het wachtwoord in:", 0.07)
+    typewriter("wachtwoord:", 0.07)
     wachtwoord = input("> ")
 
     if wachtwoord == "1908":
@@ -48,7 +48,7 @@ def vraag_stel(vraag, antwoord, hint):
     typewriter("\n" + vraag)
 
     while True:
-        respons = input("Jouw antwoord: ").strip().lower()
+        respons = input("antwoord: ").strip().lower()
 
         if respons == antwoord.lower():
             typewriter("Correct! ✅")
@@ -61,8 +61,6 @@ def vraag_stel(vraag, antwoord, hint):
                 typewriter(f"💡 Hint: {hint}")
 
 def main():
-    typewriter("De quiz begint...\n", 0.06)
-
     for v in vragen:
         vraag_stel(v["vraag"], v["antwoord"], v["hint"])
 
