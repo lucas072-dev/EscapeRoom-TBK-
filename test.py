@@ -1,99 +1,95 @@
 import time
 import sys
-import os
 
-# ===== KLEUR =====
-RED = "\033[91m"
-RESET = "\033[0m"
-
-def clear_screen():
-    os.system("cls" if os.name == "nt" else "clear")
-
-def typewriter(text, delay=0.05, color=None):
-    if color:
-        sys.stdout.write(color)
+def typewriter(text, delay=0.05):
     for char in text:
         sys.stdout.write(char)
         sys.stdout.flush()
         time.sleep(delay)
-    if color:
-        sys.stdout.write(RESET)
     print()
 
-# ===== START =====
-clear_screen()
+def progress_bar():
+    stappen = 50
 
-# ===== START WACHTWOORD (ONBEPERKT) =====
-while True:
-    typewriter("wachtwoord:", 0.07)
-    wachtwoord = input("> ")
+    bar_lengte = 30
 
-    if wachtwoord == "1908":
-        clear_screen()
-        typewriter("Het wachtwoord is correct!\n")
-        break
-    else:
-        typewriter("Onjuist wachtwoord.\n", color=RED)
+    print("Laden: ", end='', flush=True)
+
+    for i in range(stappen + 1):
+
+        percent = (i / stappen) * 100
+
+        blokjes = i * bar_lengte // stappen
+
+        bar = '█' * blokjes + '░' * (bar_lengte - blokjes)
+
+        print(f'\r[{bar}] {percent:.1f}%', end='', flush=True)
+
+        time.sleep(0.1)
+
+    print("\n Gevalideerd!")
+
+# ===== START WACHTWOORD =====
+typewriter("Voer het wachtwoord in:", 0.07)
+wachtwoord = input("> ")
+
+if wachtwoord == "1908":
+    typewriter("✅ Het wachtwoord is correct!\n")
+else:
+    typewriter("❌ Het wachtwoord is incorrect!")
+    sys.exit()
+
+progress_bar()
 
 # ===== VRAGEN =====
 vragen = [
     {
         "vraag": "Vraag 1: Hoeveel meer radioactieve straling was er bij de superwolven dan wat volgens de menselijke veiligheidslimiet mag?",
-        "antwoorden": ["6 keer", "6", "zes keer"],
+        "antwoord": "6 keer",
         "hint": "Het is een enkel cijfer, en best een klein getal."
     },
     {
         "vraag": "Vraag 2: Hoeveel ton woog de deksel die werd weggeblazen door de stoomexplosie?",
-        "antwoorden": ["1000 ton", "1000ton", "duizend ton", "1000"],
+        "antwoord": "1000 ton",
         "hint": "Het is in tonnen uitgedrukt, niet in kilo’s."
     },
     {
         "vraag": "Vraag 3: Welke naburige stad werd ook getroffen door de explosie van Tsjernobyl?",
-        "antwoorden": ["pripjat", "pripyat"],
+        "antwoord": "pripjat",
         "hint": "De stad ligt op korte afstand van de kerncentrale."
     },
     {
         "vraag": "Vraag 4: Hoe groot was de vervreemdingszone rond de kerncentrale?",
-        "antwoorden": ["30 km", "30km", "dertig km", "30 kilometer"],
+        "antwoord": "30 km",
         "hint": "Het aantal is kleiner dan 50, een mooi rond getal."
     }
 ]
 
-def vraag_stel(vraag, antwoorden, hint):
-    fouten = 0
+def vraag_stel(vraag, antwoord, hint):
     typewriter("\n" + vraag)
+    respons = input("Jouw antwoord: ")
 
-    antwoorden = [a.lower() for a in antwoorden]
-
-    while True:
-        respons = input("antwoord: ").strip().lower()
-
-        if respons in antwoorden:
-            clear_screen()
-            typewriter("Correct! ✅")
-            return
-        else:
-            fouten += 1
-            typewriter("Fout antwoord.", color=RED)
-
-            if fouten == 3:
-                typewriter(f"Hint: {hint}")
+    if respons.lower().strip() == antwoord.lower():
+        typewriter("Correct! ✅")
+        return True
+    else:
+        typewriter(f"❌ Fout! Het juiste antwoord was: {antwoord}")
+        typewriter(f"💡 Hint: {hint}")
+        return False
 
 def main():
     for v in vragen:
-        vraag_stel(v["vraag"], v["antwoorden"], v["hint"])
+        if not vraag_stel(v["vraag"], v["antwoord"], v["hint"]):
+            typewriter("\nJe bent afgevallen. Probeer het opnieuw.")
+            return
 
-    clear_screen()
-    typewriter("Alle vragen beantwoord!")
+    typewriter("\n🎯 Alle vragen goed beantwoord!")
     typewriter("Voer het eindwachtwoord in:")
 
-    while True:
-        laatste = input("> ")
-        if laatste == "9128":
-            clear_screen()
-            typewriter("Eindwachtwoord correct! Je hebt het gehaald!", 0.06)
-            break
-        else:
-            typewriter("Fout eindwachtwoord. Probeer opnieuw.", color=RED)
+    laatste = input("> ")
+    if laatste == "9128":
+        typewriter("🎉 Eindwachtwoord correct! Je hebt het gehaald!", 0.06)
+    else:
+        typewriter("❌ Fout eindwachtwoord. Probeer later opnieuw.")
 
 main()
