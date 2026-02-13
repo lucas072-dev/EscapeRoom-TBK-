@@ -3,4 +3,4 @@
 trap '' INT
 stty -echoctl
 
-python3 app.py
+python3 /home/pi/Escaperoom-tbk-/app.py
