@@ -4,6 +4,8 @@ import os
 import termios
 
 RED = "\033[91m"
+GREEN = "\033[92m"
+BLUE = "\033[94m"
 RESET = "\033[0m"
 
 fd = sys.stdin.fileno()
@@ -20,20 +22,26 @@ def enable_input():
 
 disable_input()
 
-def veilige_input(prompt=""):
+def veilige_input(prompt="", color=BLUE):
     enable_input()
 
     termios.tcflush(fd, termios.TCIFLUSH)
 
     try:
+        if color:
+            sys.stdout.write(color)
+            sys.stdout.flush()
         return input(prompt)
     finally:
+        if color:
+            sys.stdout.write(RESET)
+            sys.stdout.flush()
         disable_input()
 
 def clear_screen():
     os.system("clear")
 
-def typewriter(text, delay=0.05, color=None):
+def typewriter(text, delay=0.05, color=GREEN):
     if color:
         sys.stdout.write(color)
 
@@ -50,6 +58,7 @@ def typewriter(text, delay=0.05, color=None):
 def mooie_progress_bar():
     stappen = 50
     bar_lengte = 30
+    sys.stdout.write(GREEN)
     print("Laden: ", end='', flush=True)
 
     for i in range(stappen + 1):
@@ -59,6 +68,7 @@ def mooie_progress_bar():
         print(f'\r[{bar}] {percent:.1f}%', end='', flush=True)
         time.sleep(0.1)
 
+    sys.stdout.write(RESET)
     print("\n")
 
 clear_screen()
@@ -86,7 +96,7 @@ vragen = [
     {
         "vraag": "Vraag 2: Hoeveel ton woog de deksel die werd weggeblazen door de stoomexplosie?",
         "antwoorden": ["1000 ton", "1000ton", "duizend ton", "1000"],
-        "hint": "Het is in tonnen uitgedrukt, niet in kilo’s."
+        "hint": "Het is in tonnen uitgedrukt, niet in kilo's."
     },
     {
         "vraag": "Vraag 3: Welke naburige stad werd ook getroffen door de explosie van Tsjernobyl?",
