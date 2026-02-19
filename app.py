@@ -146,6 +146,7 @@ def main():
     for v in vragen:
         vraag_stel(v["vraag"], v["antwoorden"], v["hint"])
 
+    time.sleep(1)
     clear_screen()
     typewriter("Alle vragen beantwoord")
     typewriter("Wachtwoord is 9128")
