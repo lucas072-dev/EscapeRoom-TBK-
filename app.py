@@ -90,10 +90,10 @@ while True:
 
     if wachtwoord == "120122":
         clear_screen()
-        typewriter("Wachtwoord is gevalideerd ✓\n")
+        typewriter("Wachtwoord is gevalideerd!\n")
         break
     else:
-        typewriter("Onjuist wachtwoord ✗\n", color=RED)
+        typewriter("Onjuist wachtwoord!\n", color=RED)
 
 vragen = [
     {
@@ -125,7 +125,7 @@ vragen = [
 
 def vraag_stel(vraag, antwoorden, hint):
     fouten = 0
-    typewriter("\n" + vraag)
+    typewriter(vraag)
     antwoorden = [a.lower() for a in antwoorden]
 
     while True:
@@ -133,11 +133,11 @@ def vraag_stel(vraag, antwoorden, hint):
 
         if respons in antwoorden:
             clear_screen()
-            typewriter("Correct! ✓")
+            typewriter("Correct!")
             return
         else:
             fouten += 1
-            typewriter("Fout antwoord ✗", color=RED)
+            typewriter("Fout antwoord!", color=RED)
 
             if fouten == 3:
                 typewriter(f"Hint: {hint}")
